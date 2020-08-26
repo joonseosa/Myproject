@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+.loginContain{
+    position: relative;
+  	bottom: 27px;
+    right: 120px;
+}
+.loginContain a:hover{
+	color: #b0b435;
+}
+.joinBtn{
+	float: left;
+}
+.loginBtn{
+	float: right;
+	margin-left: 10px;
+}
+.logoutBtnText{
+	font-size:10pt;
+	color: black;
+	margin-left: 5px;
+}
+.userName{
+	font-weight:bold;
+	font-size:12pt;
+	color: #789F6F;
+}
+.userName:hover{
+	color: #789F6F;
+}
+.nimFont{
+	font-size: 10pt;
+}
+.loginBtnText{
+	font-size:10pt;
+	color: black;
+}
