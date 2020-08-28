@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sol.admin.dao.OrderDAO">
+  
+
+<select id="getOrder" resultType="odto" parameterType="odto">
+select rownum rr, mem_name,orders_item_money,orders_item_cnt,option_name,item_name, order_list.order_no, order_status
+   from order_list
+   join member 
+   on member.mem_id=order_list.mem_id
+   join (select item_name, orders_item_money,orders_item_cnt,option_name, order_no
+                from order_item
+                join item
+                on order_item.item_no=item.item_no) a
+   on a.order_no=order_list.order_no
+    <if test="order_no > 0 ">
+       and a.order_no =  #{order_no}
+    </if>
+   </select>
+
+  <update id="updateOrder" parameterType="odto">
+    UPDATE ORDER_LIST
+    SET ORDER_STATUS=#{order_status}
+    WHERE ORDER_NO  = #{order_no}
+  </update> 
+  <delete id="deleteOrder" parameterType="odto">
+    DELETE FROM ORDER_LIST
+   WHERE ORDER_NO  = #{order_no}
+  </delete>
+
+
+
+
+
+
+<select id="getOrderCancel" resultType="ocdto">
+   select cancel_receipt_date,cancel_complete_date,admin_approval_or_not,cancel_reason,detail_reason,cancel_quantity  
+   from cancel where rownum&lt;=20
+   </select>
+
+
+
+
+
+
+
+<!--       <select id="getMemers" parameterType="mdto"  -->
+<!--                  resultType="mdto"> -->
+<!--    SELECT A.*                                                           -->
+<!-- 	FROM (SELECT ROWNUM RR, RMEBER.*                                -->
+<!-- 	        FROM  (SELECT MEM_ID, M_PASSWD, M_NAME,  -->
+<!-- 	                      M_EMAIL, M_PHONE, ZIPCODE,  -->
+<!-- 	                      ADDRESS, ADDRESS2, M_JOB, M_ROLL -->
+<!--                      FROM MEMBER                                      -->
+<!-- 	                ORDER BY MEM_ID) RMEBER) A -->
+<!-- 	 <choose> -->
+<!-- 	  <when test="mem_id!=null"> -->
+<!-- 	     WHERE MEM_ID = #{mem_id}  -->
+<!-- 	  </when> -->
+<!-- 	 </choose> -->
+<!--    </select> -->
+   <!-- <select id="memberSelect" parameterType="mdto" resultType="mdto">
+	   SELECT MEM_ID, M_PASSWD, M_NAME, M_EMAIL, M_PHONE, 
+	          ZIPCODE, ADDRESS, ADDRESS2, M_JOB
+	   FROM MEMBER
+	   WHERE MEM_ID = #{mem_id} 
+   </select>
+   <update id="memberUpdate">
+	   UPDATE  MEMBER SET 
+		 M_PASSWD  = #{m_passwd}
+		,M_EMAIL   = #{m_email }
+		,M_PHONE   = #{m_phone }
+		,ZIPCODE   = #{zipcode }
+		,ADDRESS   = #{address }
+		,ADDRESS2  = #{address2}
+		,M_JOB     = #{m_job   }
+		WHERE MEM_ID = #{mem_id} 
+   </update> -->
+</mapper>
