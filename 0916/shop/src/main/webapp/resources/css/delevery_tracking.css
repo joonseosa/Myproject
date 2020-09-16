@@ -1,0 +1,85 @@
+@charset "UTF-8";
+
+.stateDelivery{
+	background-color: #E0E0E0;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    margin-left: 210px;
+    width: 90%;
+    height: 130px;
+}
+.delivery_tracking_contain{
+	margin-top: 30px;
+    float: right;
+    width: 800px;
+    height: 300px;
+    border: 1px solid;
+}
+.productImg{
+	width: 130px;
+	margin-left: 84px;
+	margin-top: 84px;
+	margin-bottom: 84px;
+	margin-right: 10px;
+}
+.textContain{
+	float: left;
+    margin-top: 100px;
+    margin-left: 50px;
+}
+.textContainLeft{
+	float: left;
+    margin-right: 50px;
+}
+.textContainLeft a{
+	font-weight: bold;
+}
+.textContainRight{
+	margin-top: 105px;
+    float: right;
+    margin-right: 60px;
+    text-align: center;
+}
+.state{
+	font-size: 17pt;
+    font-weight: bold;
+    color: #1ABC9C;
+}
+.day{
+	font-weight: bold;
+}
+.scheduled{
+	font-weight: bold;
+    color: #E74C3C;
+}
+
+.stateContain{
+	width: 800px;
+    height: 350px;
+    float: right;
+}
+.stateContainLeft{
+	float: left;
+	text-align: center;
+	margin-top: 70px;
+    margin-left: 100px;
+}
+.invoiceNumberTitle{
+	font-weight: bold;
+    font-size: 23pt;
+}
+.invoiceNumber{
+	font-weight: bold;
+    font-size: 20pt;
+    color: #E74C3C;
+}
+.stateContainRight{
+	float: right;
+    margin-top: 70px;
+    margin-right: 100px;
+}
+font.title{
+	font-weight: bold;
+    font-size: 14pt;
+}

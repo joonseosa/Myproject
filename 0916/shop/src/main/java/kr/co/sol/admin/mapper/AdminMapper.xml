@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sol.admin.dao.AdminDAO">
+  
+  <!--  <insert id="memberJoin" parameterType="mdto">
+    INSERT INTO 
+     MEMBER(MEM_ID,M_PASSWD, M_NAME,
+            M_EMAIL, M_PHONE, ZIPCODE,
+            ADDRESS, ADDRESS2, M_JOB)
+    VALUES(#{mem_id}
+          ,#{m_passwd}
+          ,#{m_name}
+          ,#{m_email}
+          ,#{m_phone}
+          ,#{zipcode}
+          ,#{address}
+          ,#{address2}
+          ,#{m_job}
+           ) 
+   </insert> -->
+   
+    <select id="logon" parameterType="adto"  resultType="string">
+      SELECT ADMIN_ID idKey 
+      FROM ADMIN 
+      WHERE ADMIN_ID = #{admin_id} 
+      AND ADMIN_passwd = #{admin_passwd}
+   </select>
+   
+   
+   <select id="getItemInquirys" parameterType="int" resultType="iqdto">
+select * from (select rownum rr, a.* from(select INQ_NO,INQ_TITLE,MEM_ID,INQ_CONTENT,INQ_REF,INQ_REG_DATE,ITEM_NO,ITEM_NAME,ITEM_DESCRIPTTION,
+ITEM_FIRST_PRICE,ITEM_DISCOUNT,ITEM_THUMBNAIL,ITEM_SALES_RATE,ITEM_STOCK,CATEGORY_NO,REG_DATE
+ from item_inquiry natural join item)a)b
+  where rr BETWEEN #{start} and #{end}
+   </select>
+   
+      <select id="getItemInquiryscnt" resultType="int">
+select count(*)
+ from item_inquiry natural join item
+   </select>
+   
+      <select id="getItemInquiry" parameterType="iqdto" resultType="iqdto">
+select INQ_NO,INQ_TITLE,MEM_ID,INQ_CONTENT,INQ_REF,INQ_REG_DATE,ITEM_NO,ITEM_NAME,ITEM_DESCRIPTTION,
+ITEM_FIRST_PRICE,ITEM_DISCOUNT,ITEM_THUMBNAIL,ITEM_SALES_RATE,ITEM_STOCK,CATEGORY_NO,REG_DATE
+ from item_inquiry natural join item
+   	where inq_no=#{inq_no}
+   </select>
+<insert id="ItemInquiryWriteProc" parameterType="iqdto">
+<selectKey resultType="Integer" keyProperty="inq_no" order="BEFORE" >
+	select nvl(max(inq_no),0) + 1 from item_inquiry
+<!-- 	nvl (a,b,c,d,...) 첫번째 인자값이 널이면 다음 인자를 출력한다 , inq_no가 널이면 0을 출력, 그 이후에는 1을 증가시켜 keyproperty에 저장한다    -->
+</selectKey>
+	insert into item_inquiry(inq_no, inq_title, inq_content, question_no,inq_ref,
+							inq_reg_date, item_no, mem_id)
+			    values(#{inq_no}, #{inq_title}, #{inq_content}, #{question_no},#{inq_ref},
+							sysdate, #{item_no}, #{mem_id})
+</insert>
+
+  <delete id="ItemInquiryDelete" parameterType="iqdto">
+    DELETE FROM ITEM_INQUIRY
+   WHERE INQ_NO  = #{inq_no}
+  </delete>
+
+
+
+
+
+ 
+   <select id="getMember" resultType="mdto" parameterType="int">
+	select *
+         from(select rownum rr, a.*
+                   from(select mem_name,mem_id,mem_mobile,mem_email,mem_address 
+                           from member) a) b 
+         where rr BETWEEN #{start1} and #{end1}
+
+
+<!--    select  MEM_NAME,MEM_ID,MEM_MOBILE,MEM_EMAIL,MEM_ADDRESS FROM MEMBER WHERE ROWNUM&lt;=20 -->
+   <!-- &lt; < 왼쪽으로 입을 벌리고 있는 부등호  -->
+   </select>
+
+<select id="getItem" resultType="idto" parameterType="int">
+   select *
+         from(select rownum rr, a.*
+                   from(select item_no, item_name, item_first_price, item_discount,item_thumbnail, reg_date 
+                           from item) a) b 
+         where rr BETWEEN #{start} and #{end}
+   </select>
+   
+<!--    페이징처리 계산하는 쿼리 -->
+	<select id="getItemCount" resultType="int">
+   select count(item_no) from item
+   </select>
+   
+   <select id="getMemberCount" resultType="int">
+   select count(mem_id) from member
+   </select>
+   
+   <select id="getOrderCount" resultType="int">
+   select count(order_no) from order_list
+   </select>
+   
+   
+   
+   
+<select id="getOrder" resultType="odto" parameterType="int">
+select * from
+  (select rownum rr, mem_name,orders_item_money,orders_item_cnt,item_name, order_list.order_no, order_status
+   from order_list
+   join member 
+   on member.mem_id=order_list.mem_id
+   join (select item_name, orders_item_money,orders_item_cnt,order_no
+                from order_item
+                join item
+                on order_item.item_no=item.item_no) a
+   on a.order_no=order_list.order_no) b
+      where rr BETWEEN #{start} and #{end}
+    <if test="order_no > 0 ">
+       and a.order_no =  #{order_no}
+    </if>
+   </select>
+   
+   
+
+  <update id="updateOrder" parameterType="odto">
+    UPDATE ORDER
+    SET ORDER_STATUS=#{order_status}
+    WHERE ORDER_NO  = #{order_no}
+  </update> 
+  <delete id="deleteOrder" parameterType="odto">
+    DELETE FROM ORDER
+   WHERE ORDER_NO  = #{order_no}
+  </delete>
+
+
+
+
+<!-- 주문취소상품 -->
+
+<select id="getOrderCancel" resultType="ocdto">
+   select order_no,cancel_receipt_date,cancel_complete_date,admin_approval_or_not,cancel_reason,detail_reason  
+   from cancel natural join order_list
+   </select>
+
+
+ <update id="OrderCancelUpdate" parameterType="ocdto">
+    UPDATE CANCEL
+    SET ADMIN_APPROVAL_OR_NOT=#{admin_approval_or_not}
+    WHERE ORDER_NO = #{order_no}
+  </update> 
+  <delete id="OrderCancelDelete" parameterType="ocdto">
+    DELETE FROM CANCEL
+   WHERE ORDER_NO = #{order_no}
+  </delete>
+
+
+<select id="getMdItem" resultType="idto" parameterType="idto">
+SELECT*FROM MD_ITEM
+NATURAL JOIN ITEM
+</select>
+
+<insert id="MdItemInsert" parameterType="midto">
+	insert into md_item values(#{item_no})
+</insert>
+
+<select id="MdItemSelect" resultType="int" parameterType="string">
+SELECT count(*) FROM MD_ITEM where item_no=#{item_no}
+</select>
+
+
+<delete id="MdItemDelete" parameterType="midto">
+delete from md_item
+where item_no=#{item_no}
+</delete>
+
+<select id="getPayMoney" resultType="odto" parameterType="odto">
+<!-- select substr(order_date,5,2)||'월',sum(order_money)||'원' 
+from order_list group by substr(order_date,1,4),substr(order_date,5,2) -->
+select substr(order_date,5,2)||'월' order_date ,sum(order_money)||'원'  order_money
+from order_list group by substr(order_date,1,4),substr(order_date,5,2)
+</select>
+
+
+
+</mapper>

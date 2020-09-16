@@ -1,0 +1,183 @@
+@charset "UTF-8";
+.informationUpdateTable{
+	border: 1px solid #9CDFBA;
+}
+.informationUpdateTableContain{
+	float: right;
+	margin-right: 30px;
+}
+.informationUpdateTable th,td{
+	border: 1px solid #9CDFBA;
+}
+.informationUpdateTable th{
+	width: 250px;
+	height: 48px;
+	text-align: center;
+	background-color: #F0FBF5;
+}
+.pwd::-webkit-input-placeholder{
+	text-align: center;
+}
+.pwd{
+	margin-top: 5px;
+	height: 29px;
+}
+.informationUpdateTable td{
+	padding-left: 25px;
+	width: 500px;
+/* 	text-align: left; */
+}
+
+.updateBtn {
+	background-color:#E0E0E0 ;
+	margin-right:200px;
+    float: right;
+    text-align: center;
+    width: 100px;
+}
+.pwdUpdateBtn {
+	background-color:#E0E0E0 ;
+	margin-top: 5px;
+	margin-right: 180px;
+    float: right;
+    text-align: center;
+    width: 100px;
+}
+
+.zipCheckBtnText {
+	color: #686868;
+	cursor: pointer;
+}
+
+.updateBtnText:hover {
+	color: black;
+	cursor: pointer;
+}
+#emailChange{
+	color: white;
+}
+.emailChangeForm{
+	background-color:#f0f0f0;
+	border: 1px solid #dadde4;
+	width: 330px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display:none;
+}
+#emailMsg{
+	color: red;
+}
+.email{
+	height: 25px;
+}
+.emailUpdateBtn{
+	background-color:#707070 ;
+	margin-right: 50px;
+    float: right;
+    text-align: center;
+    width: 60px;
+}
+.emailUpdateBtnText{
+	color: white;
+	cursor: pointer;
+}
+
+.emailUpdateBtnText:hover{
+	color: black;
+}
+
+.phoneChangeForm{
+	background-color:#f0f0f0;
+	border: 1px solid #dadde4;
+	width: 330px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display:none;
+}
+.tel{
+	height: 25px;
+}
+#telMsg{
+	color: red;
+}
+.telUpdateBtn{
+	background-color:#707070 ;
+	margin-right: 50px;
+    float: right;
+    text-align: center;
+    width: 60px;
+}
+.telUpdateBtnText{
+	color: white;
+	cursor: pointer;
+}
+
+.telUpdateBtnText:hover{
+	color: black;
+}
+.telUpdateBtn{
+	color: white;
+}
+
+.zipCheckUpdateBtn{
+	background-color: #E0E0E0;
+    margin-right: 208px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    float: right;
+    text-align: center;
+    width: 100px;
+}
+.addressUpdateBtn{
+	background-color: #E0E0E0;
+    margin-right: 144px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    float: right;
+    text-align: center;
+    width: 100px;
+}
+.addressUpdateBtnText{
+	color: #686868;
+	cursor: pointer;
+}
+
+.address{
+	margin-top: 5px;
+	height: 29px;
+}
+.addressP{
+	float: left;
+}
+.addressMsg{
+	float: left;
+	color: red;
+}
+.updateCancelBtn{
+	background-color:#707070 ;
+	margin-right: 307px;
+    margin-top: 6px;
+    float: right;
+    text-align: center;
+    width: 100px;
+}
+.updateCancelText{
+	color: white;
+	cursor: pointer;
+}
+.updateCancelText:hover {
+	color: black;
+}
+
+#pwMsg{
+	color: red;
+}
+

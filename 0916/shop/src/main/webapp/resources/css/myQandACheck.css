@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+.QandA_Contain{
+	float: right;
+	width: 835px;
+/* 	border: 1px solid; */
+}
+.reviewDiv{
+	margin-top:30px;
+}
+.QandADiv{
+	margin-top:30px;
+}
+.line{
+	border: 1px solid #bdbdbd;
+}
+.reviewTitle{
+	font-weight: bold;
+}
+.reviewTable{
+	margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    text-align: center;
+}
+.reviewTable th,td{
+	border: 1px solid #ccc;
+	width: 130px;
+}
