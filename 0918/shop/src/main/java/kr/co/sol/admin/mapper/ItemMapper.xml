@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sol.admin.dao.ItemDAO">
+<insert id="insertProduct" parameterType="idto">
+       <selectKey keyProperty="item_no" resultType="int" order="BEFORE">
+	       SELECT NVL(MAX(ITEM_NO),0)+1 item_no FROM ITEM
+      </selectKey>
+	    INSERT INTO 
+	     ITEM(ITEM_NO,ITEM_FIRST_PRICE,ITEM_DISCOUNT,ITEM_NAME, REG_DATE,ITEM_DESCRIPTTION,
+	          ITEM_STOCK,ITEM_THUMBNAIL)
+	    VALUES( #{item_no},
+	            #{item_first_price},
+	            #{item_discount},
+	            #{item_name},
+	            SYSDATE,
+	            #{item_descripttion},
+	            #{item_stock},
+	            #{item_thumbnail}
+				
+	           ) 
+   </insert>
+
+
+<select id="getItems" resultType="idto">
+   select  item_no,item_name,item_first_price,reg_date,item_stock,item_descripttion,item_thumbnail from item where rownum&lt;=80
+</select>
+<select id="getItem" parameterType="idto" resultType="idto">
+	select item_no,item_name,item_first_price,reg_date,item_stock,item_descripttion,item_thumbnail from item where item_no=#{item_no}
+</select>
+
+<update id="updateProduct" parameterType="idto">
+	update item set
+	 			item_name=#{item_name},
+				item_first_price=#{item_first_price},
+				item_descripttion=#{item_descripttion},
+				item_stock=#{item_stock},
+				item_thumbnail=#{item_thumbnail}
+	where item_no=#{item_no}			
+</update> 
+
+<delete id="deleteProduct" parameterType="idto">
+	delete from item
+	where item_no=#{item_no}
+</delete>
+
+
+
+</mapper>

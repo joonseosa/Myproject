@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+.check_P{
+	float: right;
+	margin-top: 45px;
+    margin-right: 103px;
+}
+#msg{
+	color: red;
+	
+}

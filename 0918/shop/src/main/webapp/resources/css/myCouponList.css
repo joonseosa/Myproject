@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+.couponListContain{
+	border: 1px solid;
+    float: right;
+    width: 830px;
+    height: 100%;
+}
+.couponTable{
+	border: 1px solid;
+	text-align: center;
+	
+}
+.couponTable th,td{
+	width: 207px;
+	border: 1px solid #ccc;
+}
