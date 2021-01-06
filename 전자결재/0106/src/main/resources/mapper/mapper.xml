@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper">
+	
+	<resultMap type="map" id="loginMap">
+		<result column="MEM_ID" property="memId"/>
+		<result column="MEM_PASS" property="memPass"/>
+		<result column="MEM_NAME" property="memName"/>
+		<result column="MEM_RANK" property="memRank"/>
+		<result column="MEM_RANK_KOR" property="memRankKor"/>
+	</resultMap>
+			
+	<resultMap type="map" id="listMap">
+		<result column="SEQ" property="seq"/>
+		<result column="WRITE_ID" 	     property="writeId"/>
+		<result column="APPR_SUBJECT"    property="apprSubject"/>
+		<result column="APPR_CONTENT"    property="apprContent"/>
+		<result column="APPR_STATUS"     property="apprStatus"/>
+		<result column="APPR_REG_DATE"   property="apprRegDate"/>
+		<result column="APPR_DATE"       property="apprDate"/>
+		<result column="APPR_APPER"      property="apprApper" />
+		<result column="MEM_NAME"      property="memName"/>
+		<result column="APPR_NAME"      property="apprName"/>
+		<result column="APPR_STATUS_KOR"      property="apprStatusKor"/>
+	
+	</resultMap>		
+	
+	<resultMap type="map" id="hisMap">
+		<result column="HIS_SEQ" property="hisSeq" />
+		<result column="APPR_SEQ" property="apprSeq" />
+		<result column="HIS_APP_DATE" property="hisAppDate" />
+		<result column="HIST_APPER" property="histApper" />
+		<result column="HIST_STATUS" property="histStatus" />
+		<result column="MEM_NAME" property="memName" />
+		<result column="HIST_STATUS_KOR" property="histStatusKor" />
+	
+	</resultMap>		
+	
+
+
+
+
+	
+			
+			
+
+<select id="loginCheck" parameterType="String" resultMap="loginMap">
+	select
+	   MEM_ID
+	  ,MEM_PASS
+	  ,MEM_NAME
+	  ,MEM_RANK
+	  ,decode(MEM_RANK, 'sa','사원','da','대리','ga','과장','ba','부장') MEM_RANK_KOR
+	  from mj_approval_member
+	  where MEM_ID = #{memId}
+
+</select>
+
+<select id="list" parameterType="map" resultMap="listMap">
+  		select
+  			SEQ
+			,WRITE_ID
+			,(select MEM_NAME from mj_approval_member where MEM_ID=WRITE_ID) MEM_NAME
+			,APPR_SUBJECT
+			,APPR_CONTENT
+			,APPR_STATUS
+			,APPR_REG_DATE
+			,APPR_DATE
+			,APPR_APPER
+			,(select MEM_NAME from mj_approval_member where MEM_ID=APPR_APPER) APPR_NAME
+			,decode(APPR_STATUS, 'tmp','임시저장','wat','결재대기','ing','결재중','end','결재완료','ret','반려')appr_status_kor	
+				from MJ_APPROVAL_LIST
+				where 1=1
+				<choose>
+					<when test="memRank == 'sa'">
+						and WRITE_ID = #{memId}
+					</when>
+					
+					<when test="memRank == 'da'">
+						and WRITE_ID = #{memId}
+					</when>
+						
+					<when test="memRank == 'ga'">
+			and (
+              WRITE_ID = #{memId}
+              or APPR_STATUS = 'wat'
+              or seq in 
+              (
+		                  select appr_seq from(
+		                  
+		                    
+		                      select mah.*
+		                          ,rank() over(PARTITION BY appr_seq order by his_seq desc) rk 
+		                      from MJ_APPROVAL_HISTORY mah
+		                      
+		                   ) where rk in (1,2)
+		                      and hist_apper = #{memId}
+             		 )
+			)
+				</when>
+				
+				<when test="memRank == 'ba'">
+				and (WRITE_ID = #{memId} or (APPR_APPER = #{memId} or APPR_STATUS = 'ing' or APPR_STATUS = 'wat' or  APPR_STATUS = 'end'))
+				</when>
+				
+				
+				
+				
+				
+				
+				</choose>	
+		
+			<!-- ajax 검색  -->
+				<choose>
+					<when test="searchOpt == 'writer'">
+						and write_id in (select mem_id from MJ_APPROVAL_MEMBER where mem_name like '%${searchType}%')
+					</when>
+					
+					<when test="searchOpt == 'subjectCn'">
+						and (APPR_SUBJECT like '%'||#{searchType}||'%' OR  APPR_CONTENT like '%'||#{searchType}||'%')
+					</when>
+					
+<!-- 					<when test="searchOpt == 'apprName'"> -->
+<!-- 						and APPR_APPER like '%${searchType}%' -->
+<!-- 					</when>						 -->
+			
+					<when test="searchOpt == 'apprName'">
+						and APPR_APPER in (select mem_id from MJ_APPROVAL_MEMBER where mem_name like '%${searchType}%')
+					</when>						
+			
+			
+			
+				</choose>							
+				<if test="appOpt != 'stCon' and appOpt != null and appOpt != ''">
+						and APPR_STATUS = #{appOpt}
+				</if>
+				
+				<if test="stDate != null and stDate != ''">
+					and to_char(APPR_REG_DATE,'mm/dd/yyyy') between #{stDate} and #{edDate}
+				</if>
+				order by seq desc
+</select>
+						
+				
+					
+				
+
+
+	<select id="seq" resultType="integer">
+		select nvl(max(seq), 0)+1 from mj_approval_list
+	</select>
+	
+	<insert id="insert" parameterType="map">
+	 	insert into mj_approval_list(
+	 		SEQ
+	 		,WRITE_ID
+	 		,APPR_SUBJECT
+	 		,APPR_CONTENT
+	 		,APPR_STATUS
+	 		,APPR_REG_DATE
+	 		<if test = "appChk == 'Y'.toString()">
+				,APPR_DATE
+				
+				,APPR_APPER
+			</if>
+	 	) values(
+	 			 #{seq}
+	 		    ,#{writerId} 
+	 			,#{subj} 
+	 			,#{content} 
+	 			,#{appStatus}
+	 			,sysdate
+	 			<if test = "appChk == 'Y'.toString()">
+					,sysdate
+					,#{memInfo.memId}
+				</if>
+	 	
+	 	)
+	</insert>
+	 	  
+	<insert id="hisInsert" parameterType="map" >
+		insert into mj_approval_history
+		values
+		(
+			(select nvl(max(HIS_SEQ),0)+1 from mj_approval_history where APPR_SEQ = #{seq})
+			,#{seq}
+			,sysdate
+		    ,#{logId} 
+			,#{appStatus}
+		)
+	</insert>	 	
+		
+	<select id="detail" resultMap="listMap" parameterType="integer" >
+      select
+  			SEQ
+			,WRITE_ID
+			,(select MEM_NAME from mj_approval_member where MEM_ID = WRITE_ID) MEM_NAME
+			,APPR_SUBJECT
+			,APPR_CONTENT
+			,APPR_STATUS
+				from MJ_APPROVAL_LIST
+				where SEQ = #{seq}
+	</select>	
+	
+	<select id="hisList" resultMap="hisMap" parameterType="integer">
+		select
+			HIS_SEQ
+				,APPR_SEQ
+				,HIS_APP_DATE
+				,HIST_APPER
+				,(select MEM_NAME from mj_approval_member where MEM_ID=HIST_APPER) MEM_NAME
+				,HIST_STATUS
+				,decode(HIST_STATUS, 'tmp','임시저장','wat','결재대기','ing','결재중','end','결재완료','ret','반려')hist_status_kor
+			from mj_approval_history
+			where APPR_SEQ = #{seq}	
+				order by his_seq desc
+	</select>	
+	
+	<select id="dataChk" resultType="integer" parameterType="String">
+		select nvl(max(seq), 0) from  MJ_APPROVAL_LIST where seq = #{seq}
+	</select>
+	
+	<update id="detailUpdate" parameterType="map">
+		update MJ_APPROVAL_LIST
+		set
+			APPR_SUBJECT = #{subj}
+			,APPR_CONTENT = #{content}
+			,APPR_STATUS  = #{appStatus}
+				<if test = "appChk == 'Y'.toString()">
+				,APPR_DATE = sysdate
+				,APPR_APPER = #{memInfo.memId}
+			</if>
+			<if test = "appStatus == 'tmp'">
+				,APPR_DATE = null
+				,APPR_APPER = null
+			</if>
+			where SEQ = #{seq}
+	</update>
+	
+			
+			
+	 	
+	 	
+	 	
+	 	
+	 
+	 	
+	 		
+	 	
+	 	
+	 	
+	 
+	
+	
+
+</mapper>
